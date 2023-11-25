@@ -24,5 +24,5 @@ for element in matrix[n - 1]:
         product *= element
 
 # Виведення результатів
-print("Мінімальний елемент нижче побічної діагоналі:", min_element)
+print("Мінімальний елемент нижче побічної діагоналі:", round(min_element, 4))
 print("Твір ненульових елементів останнього рядка:", round(product, 2))
