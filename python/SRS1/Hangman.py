@@ -27,7 +27,8 @@ def play_loop():
         hangman()
     else:
         print("Дякую за гру!")
-
+        time.sleep(2)
+        exit()
 
 def hangman():
     global count
