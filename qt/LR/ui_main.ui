@@ -1,18 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>MainWindow</class>
+ <widget class="QDialog" name="MainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>558</width>
+    <height>442</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Dialog</string>
+  <property name="mouseTracking">
+   <bool>false</bool>
   </property>
+  <property name="windowTitle">
+   <string>LR1</string>
+  </property>
+  <property name="windowIcon">
+   <iconset theme="user-idle"/>
+  </property>
+  <widget class="QWidget" name="MyWidget" native="true">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>100</y>
+     <width>161</width>
+     <height>171</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(144, 0, 0);</string>
+   </property>
+   <property name="setFrameStyle" stdset="0">
+    <string>Panel</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
