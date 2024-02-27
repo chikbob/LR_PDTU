@@ -2,35 +2,47 @@
 import sys
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QFrame
+from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QFrame, QFormLayout, QSpinBox, QLabel, QSlider, \
+    QBoxLayout, QVBoxLayout, QHBoxLayout, QPushButton, QDial
 
 
-# from PyQt5 import uic
-# from PyQt5.QtWidgets import QApplication
-# from PyQt5.QtWidgets import QFrame
+class MainWindow(QWidget):
+    def __init__(self):
+        super().__init__()
 
-# from ui_main import UI_MainWindow
+        self.setWindowTitle('LR2')
+        self.setMinimumWidth(300)
 
-# Form, Window = uic.loadUiType("ui_main.ui")
+        layout = QHBoxLayout()
+        self.setLayout(layout)
 
-def createFrame():
-    f = QFrame(root)
-    f.move(15, 10)
-    f.resize(150, 100)
-    f.setStyleSheet("background-color: rgb(170,10,10)")
-    f.setFrameStyle((QFrame.Panel | QFrame.Shadow.Sunken))
-    f.setLineWidth(3)
-    f.setMidLineWidth(3)
-    f.setCursor(Qt.ForbiddenCursor)
+        spinBox = QSpinBox(minimum=3, maximum=111, value=19)
+        slider = QSlider(Qt.Orientation.Horizontal, self)
+        label = QLabel('Введіть ваш вік')
+        btn = QPushButton("Завершення")
+        qDial = QDial()
+
+        slider.setRange(3, 111)
+        slider.setValue(19)
+
+        qDial.setRange(3, 111)
+        qDial.setValue(19)
+
+        spinBox.valueChanged.connect(slider.setValue)
+        slider.valueChanged.connect(spinBox.setValue)
+        qDial.valueChanged.connect(spinBox.setValue)
+        btn.clicked.connect(self.close)
+
+        layout.addWidget(spinBox)
+        layout.addWidget(slider)
+        layout.addWidget(label)
+        layout.addWidget(qDial)
+        layout.addWidget(btn)
+
+        self.show()
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    root = QMainWindow()
-    root.resize(300, 300)
-    root.setWindowTitle("LR1")
-    root.setWindowFlag(Qt.WindowMaximizeButtonHint, True)
-    root.setWindowFlag(Qt.WindowMinimizeButtonHint, False)
-    createFrame()
-    root.show()
+    window = MainWindow()
     sys.exit(app.exec())
