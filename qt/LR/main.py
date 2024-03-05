@@ -10,34 +10,49 @@ class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle('LR2')
+        self.setWindowTitle('LR3')
         self.setMinimumWidth(300)
 
         layout = QHBoxLayout()
         self.setLayout(layout)
 
-        spinBox = QSpinBox(minimum=3, maximum=111, value=19)
-        slider = QSlider(Qt.Orientation.Horizontal, self)
-        label = QLabel('Введіть ваш вік')
-        btn = QPushButton("Завершення")
-        qDial = QDial()
+        label = QLabel("<h3>Каталог бібліотеки<h3>"
+                       "<table border=\"1\" width=\"500\" style=\"border-color: black\" >"
+                       "<tr>"
+                       "<td>Автор</td>"
+                       "<td>Назва книги</td>"
+                       "<td>Рік випуску</td>"
+                       "<td>Група</td>"
+                       "</tr>"
+                       "<tr>"
+                       "<td>Сенкевич</td>"
+                       "<td>Потоп</td>"
+                       "<td>1978</td>"
+                       "<td>Х</td>"
+                       "</tr>"
+                       "<tr>"
+                       "<td>Ландау</td>"
+                       "<td>Теорія поля</td>"
+                       "<td>1989</td>"
+                       "<td>У</td>"
+                       "</tr>"
+                       "<tr>"
+                       "<td>Дойль</td>"
+                       "<td>Сумчасті</td>"
+                       "<td>1990</td>"
+                       "<td>C</td>"
+                       "</tr>"
+                       "</table>"
+                       "<div>Примітка:</div>"
+                       "<ul>"
+                       "<li>Х – художня література;</li>"
+                       "<li>У – навчальна література</li>"
+                       "<li>З – довідкова література</li>"
+                       "</ul>"
+                       "<center><img border = \"0\" src = \"icons/mouse.png\"></center>"
+                       )
 
-        slider.setRange(3, 111)
-        slider.setValue(19)
-
-        qDial.setRange(3, 111)
-        qDial.setValue(19)
-
-        spinBox.valueChanged.connect(slider.setValue)
-        slider.valueChanged.connect(spinBox.setValue)
-        qDial.valueChanged.connect(spinBox.setValue)
-        btn.clicked.connect(self.close)
-
-        layout.addWidget(spinBox)
-        layout.addWidget(slider)
         layout.addWidget(label)
-        layout.addWidget(qDial)
-        layout.addWidget(btn)
 
         self.show()
 
