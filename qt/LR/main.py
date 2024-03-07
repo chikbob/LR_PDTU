@@ -1,63 +1,90 @@
-# This Python file uses the following encoding: utf-8
 import sys
 
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QFrame, QFormLayout, QSpinBox, QLabel, QSlider, \
-    QBoxLayout, QVBoxLayout, QHBoxLayout, QPushButton, QDial
+from PySide6.QtWidgets import QWidget, QLCDNumber, QGridLayout, QPushButton, QApplication
 
 
-class MainWindow(QWidget):
+class Calculator(QWidget):
     def __init__(self):
         super().__init__()
+        self.m_strDisplay = ""
+        self.m_stk = []
+        self.m_plcd = QLCDNumber(12)
+        self.m_plcd.setSegmentStyle(QLCDNumber.Flat)
+        self.m_plcd.setMinimumSize(150, 50)
 
-        self.setWindowTitle('LR3')
-        self.setMinimumWidth(300)
+        aButtons = [['7', '8', '9', '/'],
+                    ['4', '5', '6', '*'],
+                    ['1', '2', '3', '-'],
+                    ['0', '.', '=', '+']]
 
-        layout = QHBoxLayout()
-        self.setLayout(layout)
+        ptopLayout = QGridLayout()
+        ptopLayout.addWidget(self.m_plcd, 0, 0, 1, 4)
+        ptopLayout.addWidget(self.createButton("CE"), 1, 3)
 
-        label = QLabel("<h3>Каталог бібліотеки<h3>"
-                       "<table border=\"1\" width=\"500\" style=\"border-color: black\" >"
-                       "<tr>"
-                       "<td>Автор</td>"
-                       "<td>Назва книги</td>"
-                       "<td>Рік випуску</td>"
-                       "<td>Група</td>"
-                       "</tr>"
-                       "<tr>"
-                       "<td>Сенкевич</td>"
-                       "<td>Потоп</td>"
-                       "<td>1978</td>"
-                       "<td>Х</td>"
-                       "</tr>"
-                       "<tr>"
-                       "<td>Ландау</td>"
-                       "<td>Теорія поля</td>"
-                       "<td>1989</td>"
-                       "<td>У</td>"
-                       "</tr>"
-                       "<tr>"
-                       "<td>Дойль</td>"
-                       "<td>Сумчасті</td>"
-                       "<td>1990</td>"
-                       "<td>C</td>"
-                       "</tr>"
-                       "</table>"
-                       "<div>Примітка:</div>"
-                       "<ul>"
-                       "<li>Х – художня література;</li>"
-                       "<li>У – навчальна література</li>"
-                       "<li>З – довідкова література</li>"
-                       "</ul>"
-                       "<center><img border = \"0\" src = \"icons/mouse.png\"></center>"
-                       )
+        for i in range(4):
+            for j in range(4):
+                ptopLayout.addWidget(self.createButton(aButtons[i][j]), i + 2, j)
 
-        layout.addWidget(label)
+        self.setLayout(ptopLayout)
 
         self.show()
+
+    def createButton(self, text):
+        pcmd = QPushButton(text)
+        pcmd.setMinimumSize(40, 40)
+        pcmd.clicked.connect(self.slotButtonClicked)
+        return pcmd
+
+    def calculate(self):
+        dOperand2 = float(self.m_stk.pop())
+        strOperation = self.m_stk.pop()
+        dOperand1 = float(self.m_stk.pop())
+        dResult = 0
+
+        if strOperation == "+":
+            dResult = dOperand1 + dOperand2
+        elif strOperation == "-":
+            dResult = dOperand1 - dOperand2
+        elif strOperation == "/":
+            dResult = dOperand1 / dOperand2
+        elif strOperation == "*":
+            dResult = dOperand1 * dOperand2
+
+        self.m_plcd.display(dResult)
+
+    def slotButtonClicked(self):
+        button_text = self.sender().text()
+
+        if button_text == "CE":
+            self.m_stk.clear()
+            self.m_strDisplay = ""
+            self.m_plcd.display("0")
+            return
+        if any(char.isdigit() for char in button_text):
+            self.m_strDisplay += button_text
+            self.m_plcd.display(float(self.m_strDisplay))
+        elif button_text == ".":
+            self.m_strDisplay += button_text
+            self.m_plcd.display(self.m_strDisplay)
+        else:
+            if len(self.m_stk) >= 2:
+                self.m_stk.append(str(self.m_plcd.value()))
+                self.calculate()
+                self.m_stk.clear()
+                self.m_stk.append(str(self.m_plcd.value()))
+                if button_text != "=":
+                    self.m_stk.append(button_text)
+            else:
+                self.m_stk.append(str(self.m_plcd.value()))
+                self.m_stk.append(button_text)
+
+                self.m_strDisplay = ""
+                self.m_plcd.display("0")
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = MainWindow()
+    calculator = Calculator()
+    calculator.setWindowTitle("Calculator")
+
     sys.exit(app.exec())
