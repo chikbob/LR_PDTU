@@ -1,4 +1,5 @@
 import sys
+from math import sqrt, sin, cos
 
 from PySide6.QtWidgets import QWidget, QLCDNumber, QGridLayout, QPushButton, QApplication
 
@@ -10,19 +11,19 @@ class Calculator(QWidget):
         self.m_stk = []
         self.m_plcd = QLCDNumber(12)
         self.m_plcd.setSegmentStyle(QLCDNumber.Flat)
-        self.m_plcd.setMinimumSize(150, 50)
+        self.m_plcd.setMinimumSize(100, 100)
 
-        aButtons = [['7', '8', '9', '/'],
-                    ['4', '5', '6', '*'],
-                    ['1', '2', '3', '-'],
-                    ['0', '.', '=', '+']]
+        aButtons = [['^', '7', '8', '9', '/'],
+                    ['√', '4', '5', '6', '*'],
+                    ['sin', '1', '2', '3', '-'],
+                    ['cos', '0', '.', '=', '+']]
 
         ptopLayout = QGridLayout()
-        ptopLayout.addWidget(self.m_plcd, 0, 0, 1, 4)
-        ptopLayout.addWidget(self.createButton("CE"), 1, 3)
+        ptopLayout.addWidget(self.m_plcd, 0, 0, 1, 5)
+        ptopLayout.addWidget(self.createButton("CE"), 1, 4)
 
         for i in range(4):
-            for j in range(4):
+            for j in range(5):
                 ptopLayout.addWidget(self.createButton(aButtons[i][j]), i + 2, j)
 
         self.setLayout(ptopLayout)
@@ -36,7 +37,9 @@ class Calculator(QWidget):
         return pcmd
 
     def calculate(self):
-        dOperand2 = float(self.m_stk.pop())
+        print(self.m_stk)
+        if len(self.m_stk) > 2:
+            dOperand2 = float(self.m_stk.pop())
         strOperation = self.m_stk.pop()
         dOperand1 = float(self.m_stk.pop())
         dResult = 0
@@ -49,6 +52,14 @@ class Calculator(QWidget):
             dResult = dOperand1 / dOperand2
         elif strOperation == "*":
             dResult = dOperand1 * dOperand2
+        elif strOperation == "^":
+            dResult = dOperand1 ** dOperand2
+        elif strOperation == "√":
+            dResult = sqrt(dOperand1)
+        elif strOperation == "sin":
+            dResult = sin(dOperand1)
+        elif strOperation == "cos":
+            dResult = cos(dOperand1)
 
         self.m_plcd.display(dResult)
 
@@ -72,19 +83,30 @@ class Calculator(QWidget):
                 self.calculate()
                 self.m_stk.clear()
                 self.m_stk.append(str(self.m_plcd.value()))
+                print(self.m_stk)
                 if button_text != "=":
                     self.m_stk.append(button_text)
+                    self.m_strDisplay = ""
+                    self.m_plcd.display("0")
             else:
-                self.m_stk.append(str(self.m_plcd.value()))
-                self.m_stk.append(button_text)
-
-                self.m_strDisplay = ""
-                self.m_plcd.display("0")
+                if button_text == "√" or button_text == "sin" or button_text == "cos":
+                    if len(self.m_stk) == 0:
+                        self.m_stk.append(str(self.m_plcd.value()))
+                        self.m_stk.append(button_text)
+                        self.calculate()
+                    else:
+                        self.m_stk.append(button_text)
+                        self.calculate()
+                else:
+                    self.m_stk.append(str(self.m_plcd.value()))
+                    self.m_stk.append(button_text)
+                    self.m_strDisplay = ""
+                    self.m_plcd.display("0")
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     calculator = Calculator()
-    calculator.setWindowTitle("Calculator")
+    calculator.setWindowTitle("Lr4")
 
     sys.exit(app.exec())
